@@ -32,8 +32,8 @@ const Interfaces = () => {
   const [dnsModalOpen, setDnsModalOpen] = useState(false);
   const [ifaceModalOpen, setIfaceModalOpen] = useState(false);
   const [selectedIface, setSelectedIface] = useState(null);
-   const [addModalOpen, setAddModalOpen] = useState(false);
-  const [device,setDevice] = useState()
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [device, setDevice] = useState();
 
   // FormData stores DNS + Interface configs for current iface
   const [formData, setFormData] = useState({
@@ -49,12 +49,11 @@ const Interfaces = () => {
     status: "",
   });
 
-   const [addForm, setAddForm] = useState({
+  const [addForm, setAddForm] = useState({
     parentInterface: "",
     vlanTag: "",
   });
   const [addErrors, setAddErrors] = useState({});
-
 
   const [isUpdateEnabled, setIsUpdateEnabled] = useState(false);
 
@@ -74,28 +73,28 @@ const Interfaces = () => {
       }
     };
     fetchCheckers();
-    getDevice()
+    getDevice();
   }, []);
 
   const getDevice = async () => {
-      try {
-        const response = await getData("device");
-        setDevice(response)
-      } catch (err) {
-        console.error("Error fetching interfaces:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    try {
+      const response = await getData("device");
+      setDevice(response);
+    } catch (err) {
+      console.error("Error fetching interfaces:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-     // ✅ Open Add Interface Modal
+  // ✅ Open Add Interface Modal
   const handleOpenAddModal = () => {
     setAddForm({ parentInterface: "", vlanTag: "" });
     setAddErrors({});
     setAddModalOpen(true);
   };
 
-    const handleAddChange = (e) => {
+  const handleAddChange = (e) => {
     const { id, value } = e.target;
     setAddForm((prev) => ({
       ...prev,
@@ -103,7 +102,7 @@ const Interfaces = () => {
     }));
   };
 
-    // ✅ Validate Add Form
+  // ✅ Validate Add Form
   const validateAddForm = () => {
     const errors = {};
     if (!addForm.parentInterface) {
@@ -120,7 +119,7 @@ const Interfaces = () => {
     return Object.keys(errors).length === 0;
   };
 
-   // ✅ Save Add Form
+  // ✅ Save Add Form
   const handleSaveAdd = () => {
     if (!validateAddForm()) return;
     console.log("Saving VLAN:", addForm);
@@ -128,65 +127,62 @@ const Interfaces = () => {
     setAddModalOpen(false);
   };
 
+  // ✅ Handle Update Interfaces API
+  // inside Interfaces component
 
   // ✅ Handle Update Interfaces API
- // inside Interfaces component
+  const handleUpdateApi = async () => {
+    try {
+      setIsRunning(true);
 
-// ✅ Handle Update Interfaces API
-const handleUpdateApi = async () => {
-  try {
-    setIsRunning(true);
-
-    // Build payload dynamically from tableData (you can also merge formData if editing)
-    const payload = tableData.map((iface) => ({
-      name: iface.name,
-      devId: iface.devId || "",       // ensure these keys exist in your API response
-      driver: iface.driver || "",
-      MAC: iface.MAC || "",
-      IPv4: iface.IPv4 || "",
-      IPv4Mask: iface.IPv4Mask || "",
-      IPv6: iface.IPv6 || "",
-      IPv6Mask: iface.IPv6Mask || "",
-      dhcp: iface.dhcp ? "yes" : "no",
-      gateway: iface.gateway || "",
-      metric: iface.metric || "",
-      dns_servers: iface.dns_servers || [], // backend naming
-      internetAccess: iface.internetAccess || false,
-      public_ip: iface.public_ip || "",
-      public_port: iface.public_port || "",
-      nat_type: iface.nat_type || "",
-      link: iface.link || "down",
-      tap_name: iface.tap_name || "",
-      mtu: iface.mtu || "1500",
-      deviceType: iface.deviceType || "dpdk",
-      dnsServers: Array.isArray(iface.dnsServers) ? iface.dnsServers : [],
-      dnsDomains: Array.isArray(iface.dnsDomains) ? iface.dnsDomains : [],
-      pppoe: {
-        config: {
-          is_enabled: iface.pppoe?.config?.is_enabled || false,
-          usepeerdns: iface.pppoe?.config?.usepeerdns || false,
-          nameservers: iface.pppoe?.config?.nameservers || [],
-          mtu: iface.pppoe?.config?.mtu || "1491",
-          mru: iface.pppoe?.config?.mru || "1500",
-          username: iface.pppoe?.config?.username || "",
+      // Build payload dynamically from tableData (you can also merge formData if editing)
+      const payload = tableData.map((iface) => ({
+        name: iface.name,
+        devId: iface.devId || "", // ensure these keys exist in your API response
+        driver: iface.driver || "",
+        MAC: iface.MAC || "",
+        IPv4: iface.IPv4 || "",
+        IPv4Mask: iface.IPv4Mask || "",
+        IPv6: iface.IPv6 || "",
+        IPv6Mask: iface.IPv6Mask || "",
+        dhcp: iface.dhcp ? "yes" : "no",
+        gateway: iface.gateway || "",
+        metric: iface.metric || "",
+        dns_servers: iface.dns_servers || [], // backend naming
+        internetAccess: iface.internetAccess || false,
+        public_ip: iface.public_ip || "",
+        public_port: iface.public_port || "",
+        nat_type: iface.nat_type || "",
+        link: iface.link || "down",
+        tap_name: iface.tap_name || "",
+        mtu: iface.mtu || "1500",
+        deviceType: iface.deviceType || "dpdk",
+        dnsServers: Array.isArray(iface.dnsServers) ? iface.dnsServers : [],
+        dnsDomains: Array.isArray(iface.dnsDomains) ? iface.dnsDomains : [],
+        pppoe: {
+          config: {
+            is_enabled: iface.pppoe?.config?.is_enabled || false,
+            usepeerdns: iface.pppoe?.config?.usepeerdns || false,
+            nameservers: iface.pppoe?.config?.nameservers || [],
+            mtu: iface.pppoe?.config?.mtu || "1491",
+            mru: iface.pppoe?.config?.mru || "1500",
+            username: iface.pppoe?.config?.username || "",
+          },
+          status: iface.pppoe?.status || {},
         },
-        status: iface.pppoe?.status || {},
-      },
-    }));
+      }));
 
-    // Call your PUT API
-    const response = await putData("interfaces", payload);
+      // Call your PUT API
+      const response = await putData("interfaces", payload);
 
-    console.log("✅ Update Success:====", response);
-    
-  } catch (error) {
-    console.error("❌ Update failed:", error);
-    alert("Failed to update interfaces.");
-  } finally {
-    setIsRunning(false);
-  }
-};
-
+      console.log("✅ Update Success:====", response);
+    } catch (error) {
+      console.error("❌ Update failed:", error);
+      alert("Failed to update interfaces.");
+    } finally {
+      setIsRunning(false);
+    }
+  };
 
   // ✅ Open DNS Modal
   const handleOpenDnsModal = (iface) => {
@@ -217,7 +213,7 @@ const handleUpdateApi = async () => {
       mru: iface.mru || "",
       usePeerDns: iface.usePeerDns || false,
       status: iface.status || "",
-      dnsServers : iface.dnsServers || []
+      dnsServers: iface.dnsServers || [],
     }));
     setIsUpdateEnabled(false);
     setIfaceModalOpen(true);
@@ -322,7 +318,10 @@ const handleUpdateApi = async () => {
                       <td>
                         <span
                           style={{
-                            color: iface.link?.toLowerCase() === "up" ? "green" : "red",
+                            color:
+                              iface.link?.toLowerCase() === "up"
+                                ? "green"
+                                : "red",
                             fontWeight: "bold",
                           }}
                         >
@@ -331,13 +330,13 @@ const handleUpdateApi = async () => {
                       </td>
                       <td>
                         <Button
-                            size="sm"
-                            color="link"
-                            className="p-0 ms-2"
-                            onClick={handleOpenAddModal}
-                          >
-                            <PlusCircle size={16} />
-                          </Button>
+                          size="sm"
+                          color="link"
+                          className="p-0 ms-2"
+                          onClick={handleOpenAddModal}
+                        >
+                          <PlusCircle size={16} />
+                        </Button>
                       </td>
                     </tr>
                   ))
@@ -354,7 +353,10 @@ const handleUpdateApi = async () => {
         )}
 
         {/* ✅ DNS Modal */}
-        <Modal isOpen={dnsModalOpen} toggle={() => setDnsModalOpen(!dnsModalOpen)}>
+        <Modal
+          isOpen={dnsModalOpen}
+          toggle={() => setDnsModalOpen(!dnsModalOpen)}
+        >
           <ModalHeader toggle={() => setDnsModalOpen(false)}>
             Edit DNS Settings ({selectedIface?.name})
           </ModalHeader>
@@ -460,7 +462,7 @@ const handleUpdateApi = async () => {
                 onChange={handleChange}
               />
             </FormGroup>
-             <FormGroup>
+            <FormGroup>
               <Label for="dnsservers">DNS Servers</Label>
               <Input
                 id="dnsservers"
@@ -486,7 +488,11 @@ const handleUpdateApi = async () => {
               <Input
                 id="status"
                 type="text"
-                value={device?.vRouter?.state === "stopped" ? "Disconnected" : "Connected"}
+                value={
+                  device?.vRouter?.state === "stopped"
+                    ? "Disconnected"
+                    : "Connected"
+                }
                 onChange={handleChange}
                 disabled
               />
@@ -506,8 +512,11 @@ const handleUpdateApi = async () => {
           </ModalFooter>
         </Modal>
 
-         {/* ✅ Add VLAN Modal */}
-        <Modal isOpen={addModalOpen} toggle={() => setAddModalOpen(!addModalOpen)}>
+        {/* ✅ Add VLAN Modal */}
+        <Modal
+          isOpen={addModalOpen}
+          toggle={() => setAddModalOpen(!addModalOpen)}
+        >
           <ModalHeader toggle={() => setAddModalOpen(false)}>
             Add VLAN Interface
           </ModalHeader>
