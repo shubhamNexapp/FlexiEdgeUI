@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaHome, FaCheck } from "react-icons/fa";
+import { TiPointOfInterest } from "react-icons/ti";
+
 import "./Sidebar.css";
 
 const menuItems = [
   { name: "Home", path: "/home", icon: <FaHome /> },
   { name: "System Checker", path: "/system-checker", icon: <FaCheck /> },
+  { name: "Interfaces", path: "/interfaces", icon: <TiPointOfInterest /> },
 ];
 
 const Sidebar = () => {

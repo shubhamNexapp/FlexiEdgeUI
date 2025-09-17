@@ -9,10 +9,9 @@ import {
   CardHeader,
   Spinner,
 } from "reactstrap";
-import Breadcrumbs from "../components/Breadcrumb";
 import { getData } from "../helpers/api";
 
-const Peers = () => {
+const Home = () => {
   document.title = "Device Details | Minia";
 
   const [loading, setLoading] = useState(true);
@@ -113,4 +112,4 @@ const Peers = () => {
   );
 };
 
-export default Peers;
+export default Home;

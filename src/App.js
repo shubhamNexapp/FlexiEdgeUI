@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import SystemChecker from "./pages/SystemChecker";
+import Interfaces from "./pages/Interfaces";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null = not checked yet
@@ -40,6 +41,8 @@ function App() {
         return "Home";
       case "/system-checker":
         return "System Checker";
+        case "/interfaces":
+          return "Interfaces";
       default:
         return "Home";
     }
@@ -71,6 +74,10 @@ function App() {
             <Route
               path="/system-checker"
               element={isAuthenticated ? <SystemChecker /> : <Navigate to="/login" />}
+            />
+             <Route
+              path="/interfaces"
+              element={isAuthenticated ? <Interfaces /> : <Navigate to="/login" />}
             />
           </Routes>
         </div>
