@@ -7,7 +7,6 @@ import {
   Button,
   Spinner,
   Table,
-  Badge,
   Modal,
   ModalHeader,
   ModalBody,

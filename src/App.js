@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import SystemChecker from "./pages/SystemChecker";
 import Interfaces from "./pages/Interfaces";
+import Settings from "./pages/Settings";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null = not checked yet
@@ -31,7 +38,14 @@ function App() {
 
   if (isAuthenticated === null) {
     // still checking token → show splash or loader
-    return <div className="d-flex justify-content-center align-items-center" style={{height: "100vh"}}>Loading...</div>;
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        Loading...
+      </div>
+    );
   }
 
   // Helper to get title based on path
@@ -41,8 +55,10 @@ function App() {
         return "Home";
       case "/system-checker":
         return "System Checker";
-        case "/interfaces":
-          return "Interfaces";
+      case "/interfaces":
+        return "Interfaces";
+      case "/settings":
+        return "Device Settings";
       default:
         return "Home";
     }
@@ -56,16 +72,31 @@ function App() {
         {isAuthenticated && <Sidebar />}
         <div className={isAuthenticated ? "content" : ""}>
           {isAuthenticated && (
-            <Header onLogout={handleLogout} title={getTitle(location.pathname)} />
+            <Header
+              onLogout={handleLogout}
+              title={getTitle(location.pathname)}
+            />
           )}
           <Routes>
             <Route
               path="/"
-              element={isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />}
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/home" />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
             />
             <Route
               path="/login"
-              element={isAuthenticated ? <Navigate to="/home" /> : <Login onLogin={handleLogin} />}
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/home" />
+                ) : (
+                  <Login onLogin={handleLogin} />
+                )
+              }
             />
             <Route
               path="/home"
@@ -73,11 +104,21 @@ function App() {
             />
             <Route
               path="/system-checker"
-              element={isAuthenticated ? <SystemChecker /> : <Navigate to="/login" />}
+              element={
+                isAuthenticated ? <SystemChecker /> : <Navigate to="/login" />
+              }
             />
-             <Route
+            <Route
               path="/interfaces"
-              element={isAuthenticated ? <Interfaces /> : <Navigate to="/login" />}
+              element={
+                isAuthenticated ? <Interfaces /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                isAuthenticated ? <Settings /> : <Navigate to="/login" />
+              }
             />
           </Routes>
         </div>

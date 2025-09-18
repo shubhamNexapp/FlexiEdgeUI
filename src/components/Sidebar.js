@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaHome, FaCheck } from "react-icons/fa";
 import { TiPointOfInterest } from "react-icons/ti";
+import { IoSettingsOutline } from "react-icons/io5";
 
 import "./Sidebar.css";
 
@@ -9,6 +10,7 @@ const menuItems = [
   { name: "Home", path: "/home", icon: <FaHome /> },
   { name: "System Checker", path: "/system-checker", icon: <FaCheck /> },
   { name: "Interfaces", path: "/interfaces", icon: <TiPointOfInterest /> },
+  { name: "Settings", path: "/settings", icon: <IoSettingsOutline /> },
 ];
 
 const Sidebar = () => {
